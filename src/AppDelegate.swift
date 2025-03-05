@@ -20,6 +20,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         
+        // Check for accessibility permissions
+        checkAccessibilityPermissions()
+        
         // Create the popover for the content
         popover = NSPopover()
         popover.contentSize = NSSize(width: 400, height: 500)
@@ -88,6 +91,21 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func closePopover(_ sender: Any?) {
         popover.performClose(sender)
         eventMonitor?.stop()
+    }
+    
+    // Function to check and request accessibility permissions
+    private func checkAccessibilityPermissions() {
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+        let accessEnabled = AXIsProcessTrustedWithOptions(options as CFDictionary)
+        
+        if !accessEnabled {
+            // Show a notification to inform the user about accessibility permissions
+            let notification = NSUserNotification()
+            notification.title = "Accessibility Permissions Required"
+            notification.informativeText = "AutoType needs accessibility permissions to simulate keyboard input. Please grant permissions in System Preferences."
+            notification.soundName = NSUserNotificationDefaultSoundName
+            NSUserNotificationCenter.default.deliver(notification)
+        }
     }
 }
 

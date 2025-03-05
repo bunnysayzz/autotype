@@ -130,6 +130,12 @@ class ContentViewController: NSViewController {
             return
         }
         
+        // Check for accessibility permissions
+        if !checkAccessibilityPermissions() {
+            statusLabel.stringValue = "Error: Accessibility permissions required"
+            return
+        }
+        
         statusLabel.stringValue = "Starting in 5 seconds..."
         typeButton.isEnabled = false
         
@@ -144,6 +150,13 @@ class ContentViewController: NSViewController {
         }
     }
     
+    // Function to check and request accessibility permissions
+    private func checkAccessibilityPermissions() -> Bool {
+        let options = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+        let accessEnabled = AXIsProcessTrustedWithOptions(options as CFDictionary)
+        return accessEnabled
+    }
+    
     private func performTyping(text: String) {
         let delay = delaySlider.doubleValue
         let preserveTabs = preserveTabsCheckbox.state == .on
@@ -153,6 +166,8 @@ class ContentViewController: NSViewController {
             Thread.sleep(forTimeInterval: 0.5)
             
             let lines = text.components(separatedBy: .newlines)
+            var totalChars = 0
+            let totalToType = text.count
             
             for (index, line) in lines.enumerated() {
                 let processedLine = preserveTabs ? line : line.replacingOccurrences(of: "\t", with: "")
@@ -165,12 +180,20 @@ class ContentViewController: NSViewController {
                         self.typeCharacter(String(char))
                     }
                     Thread.sleep(forTimeInterval: delay)
+                    
+                    // Update progress
+                    totalChars += 1
+                    let progress = Double(totalChars) / Double(totalToType) * 100
+                    DispatchQueue.main.async {
+                        self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
+                    }
                 }
                 
                 // Press Enter after each line except the last one if it's empty
                 if index < lines.count - 1 || !lines.last!.isEmpty {
                     self.pressEnter()
                     Thread.sleep(forTimeInterval: delay)
+                    totalChars += 1
                 }
             }
             
@@ -187,14 +210,21 @@ class ContentViewController: NSViewController {
         // Convert character to keycode and modifiers
         let keyInfo = self.keyCodeForChar(character)
         
-        // Create key down event
-        let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: true)
-        keyDown?.flags = keyInfo.modifiers
-        keyDown?.post(tap: .cghidEventTap)
-        
-        // Create key up event
-        let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: false)
-        keyUp?.post(tap: .cghidEventTap)
+        // If we have a valid keycode
+        if keyInfo.keyCode != 0 {
+            // Create key down event
+            let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: true)
+            keyDown?.flags = keyInfo.modifiers
+            keyDown?.post(tap: .cghidEventTap)
+            
+            // Create key up event
+            let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: false)
+            keyUp?.post(tap: .cghidEventTap)
+        } else {
+            // For unsupported characters, we could implement a fallback
+            // This is a placeholder for a more sophisticated implementation
+            print("Unable to type character: \(character)")
+        }
     }
     
     private func pressEnter() {
@@ -248,7 +278,13 @@ class ContentViewController: NSViewController {
         }
         
         // Regular character
-        return (self.basicKeyCodeMap[char] ?? 0, [])
+        if let keyCode = self.basicKeyCodeMap[char] {
+            return (keyCode, [])
+        }
+        
+        // For characters not in our map, try to use Unicode input method
+        print("Character not found in keymap: \(char)")
+        return (0x09, []) // Default to 'v' key (for paste fallback)
     }
     
     // Basic mapping of characters to key codes (limited set for demonstration)
