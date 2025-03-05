@@ -24,7 +24,7 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 
 ### Option 1: Download the pre-built app
 
-1. Download the latest release from the [Releases](https://github.com/yourusername/autotype/releases) page
+1. Download the latest release from the [Releases](https://github.com/mdazharuddin/autotype/releases) page
 2. Move AutoType.app to your Applications folder
 3. Grant accessibility permissions when prompted
 
@@ -32,7 +32,7 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 
 1. Clone this repository:
    ```
-   git clone https://github.com/yourusername/autotype.git
+   git clone https://github.com/mdazharuddin/autotype.git
    cd autotype
    ```
 
@@ -67,11 +67,13 @@ AutoType requires accessibility permissions to function properly. You'll be prom
 
 ## Troubleshooting
 
-If the application doesn't type text:
-- Make sure you've granted accessibility permissions
-- Try increasing the delay between keystrokes
-- Ensure you've switched to the target application within the 5-second window
-- If using tabs, make sure the "Preserve Tab Characters" option is checked
+If you encounter any issues with AutoType, please refer to the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide for detailed solutions to common problems.
+
+Common issues include:
+- Missing accessibility permissions
+- Text not being typed correctly
+- Special characters not working
+- Application not launching
 
 ## Development
 
@@ -80,11 +82,20 @@ The application consists of three main Swift files:
 - `AppDelegate.swift`: Handles the menu bar item and popover
 - `ContentViewController.swift`: Contains the UI and typing logic
 
+## Version History
+
+- **1.0.0** (2023-03-05): Initial release
+  - Basic typing functionality
+  - Adjustable typing delay
+  - Tab character preservation
+  - Progress indicator
+  - Accessibility permissions handling
+
 ## License
 
 MIT License
 
-Copyright (c) 2023
+Copyright (c) 2023 Md Azharuddin
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
