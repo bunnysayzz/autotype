@@ -1,123 +1,50 @@
 # AutoType
 
-AutoType is a simple macOS utility that allows you to automatically type text into any application after a countdown.
-
-<p align="center">
-  <img src="resources/icon.png" width="128" height="128" alt="AutoType Icon">
-</p>
-
-## Features
-
-- Paste text and have it automatically typed into any application
-- Adjustable typing delay (0.01 to 0.2 seconds between keystrokes)
-- 5-second countdown to switch to your target application
-- Status indicator showing typing progress
-- Menu bar application for easy access
-
-## Requirements
-
-- macOS 10.13 or later
-- Xcode 12 or later (for building from source)
+A lightweight text automation tool for macOS that helps you type faster.
 
 ## Installation
 
-### Option 1: Download the pre-built app
+1. Download `AutoType.dmg` from the [latest release](https://github.com/bunnysayzz/autotype/releases/latest)
+2. Open the downloaded DMG file
+3. Drag AutoType to your Applications folder
+4. Open AutoType from Applications
 
-1. Download the latest release from the [Releases](https://github.com/bunnysayzz/autotype/releases) page
-2. Move AutoType.app to your Applications folder
-3. Grant accessibility permissions when prompted
+## First Time Setup
 
-### Option 2: Build from source
+When you first open AutoType, macOS will show security prompts. Here's how to handle them:
 
-1. Clone this repository:
-   ```
-   git clone https://github.com/bunnysayzz/autotype.git
-   cd autotype
-   ```
+### Security Warning
+If macOS shows "AutoType can't be opened because it is from an unidentified developer":
 
-2. Run the build script:
-   ```
-   chmod +x build.sh
-   ./build.sh
-   ```
+1. Open System Settings
+2. Go to Privacy & Security
+3. Scroll down to the "Security" section
+4. Click "Open Anyway" next to AutoType
+5. Click "Open" in the popup confirmation
 
-3. Run the install script to copy to Applications:
-   ```
-   chmod +x install.sh
-   ./install.sh
-   ```
+### Accessibility Permission
+AutoType needs accessibility permission to simulate keyboard input:
+
+1. When prompted, click "Open System Settings"
+2. In Privacy & Security > Accessibility
+3. Find AutoType in the list
+4. Toggle the switch to allow AutoType
 
 ## Usage
 
-1. Click the keyboard icon in the menu bar to open AutoType
-2. Paste your text into the text area
-3. Adjust the typing delay if needed (default is 0.01 seconds)
-4. Click "Start Typing" and quickly switch to your target application
-5. After a 5-second countdown, the text will be typed automatically
+1. Click the AutoType icon in your menu bar
+2. Paste or type your text in the window
+3. Adjust typing speed using the slider
+4. Click "Start Typing" and switch to your target application within 5 seconds
+5. AutoType will type out your text automatically
 
-## Typing Code
+## Features
 
-AutoType works great for typing code into editors, terminals, or other applications:
+- Type text with customizable speed
+- Simple menu bar interface
+- Easy to use
+- Works in any text input field
 
-1. Paste your code into the text area
-2. Set a comfortable typing delay (0.01-0.02 seconds works well)
-3. Click "Start Typing" and switch to your code editor
-4. The code will be typed with proper line breaks, and most editors will automatically handle indentation
+## Support
 
-## Permissions
-
-AutoType requires accessibility permissions to function properly. You'll be prompted to grant these permissions when you first run the app. If you need to grant them manually:
-
-1. Open System Preferences > Security & Privacy > Privacy > Accessibility
-2. Click the lock icon to make changes
-3. Add AutoType.app to the list of allowed applications
-
-## Troubleshooting
-
-If you encounter any issues with AutoType, please refer to the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide for detailed solutions to common problems.
-
-Common issues include:
-- Missing accessibility permissions
-- Text not being typed correctly
-- Special characters not working
-- Application not launching
-
-## Development
-
-The application consists of three main Swift files:
-- `main.swift`: The entry point for the application
-- `AppDelegate.swift`: Handles the menu bar item and popover
-- `ContentViewController.swift`: Contains the UI and typing logic
-
-## Version History
-
-- **1.0.0** (2023-03-05): Initial release
-  - Basic typing functionality
-  - Adjustable typing delay
-  - Tab character preservation
-  - Progress indicator
-  - Accessibility permissions handling
-
-## License
-
-MIT License
-
-Copyright (c) 2023 Md Azharuddin
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE. 
+For issues and feature requests, please [open an issue](https://github.com/bunnysayzz/autotype/issues) on GitHub. 
