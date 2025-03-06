@@ -5,6 +5,14 @@ All notable changes to AutoType will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.9] - 2023-03-13
+
+### Added
+- Added pause/resume functionality with Cmd+F shortcut
+- Ability to pause typing at any point and resume when ready
+- Status indicator showing when typing is paused
+- Menu option for pause/resume in the Edit menu
+
 ## [1.0.8] - 2023-03-12
 
 ### Fixed
