@@ -11,6 +11,7 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 - Paste text and have it automatically typed into any application
 - Adjustable typing delay (0.01 to 0.2 seconds between keystrokes)
 - Option to preserve tab characters for code indentation
+- Special "Code Mode" for precise formatting of programming code
 - 5-second countdown to switch to your target application
 - Status indicator showing typing progress
 - Menu bar application for easy access
@@ -54,8 +55,9 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 2. Paste your text into the text area
 3. Adjust the typing delay if needed (default is 0.05 seconds)
 4. Choose whether to preserve tab characters (checked by default)
-5. Click "Start Typing" and quickly switch to your target application
-6. After a 5-second countdown, the text will be typed automatically
+5. Enable "Code Mode" when typing programming code for precise formatting
+6. Click "Start Typing" and quickly switch to your target application
+7. After a 5-second countdown, the text will be typed automatically
 
 ## Permissions
 
@@ -83,6 +85,12 @@ The application consists of three main Swift files:
 - `ContentViewController.swift`: Contains the UI and typing logic
 
 ## Version History
+
+- **1.1.0** (2023-03-06): Code Typing Improvements
+  - Added "Code Mode" for precise code formatting
+  - Enhanced character mapping for programming symbols
+  - Fixed issues with missing characters
+  - Improved whitespace and indentation handling
 
 - **1.0.0** (2023-03-05): Initial release
   - Basic typing functionality

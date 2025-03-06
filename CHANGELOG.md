@@ -5,6 +5,18 @@ All notable changes to AutoType will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2023-03-06
+
+### Added
+- New "Code Mode" option for precise code formatting
+- Enhanced character mapping for programming symbols
+- Improved indentation handling for code blocks
+
+### Fixed
+- Fixed issues with missing characters during typing
+- Improved handling of special characters
+- Better preservation of whitespace and formatting
+
 ## [1.0.0] - 2023-03-05
 
 ### Added
