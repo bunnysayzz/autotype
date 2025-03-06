@@ -154,14 +154,22 @@ class ContentViewController: NSViewController {
             // Add a small initial delay to ensure we're in the target app
             Thread.sleep(forTimeInterval: 0.5)
             
-            // Split text into lines
+            // Split text into lines, exactly like the Python code
             let lines = text.components(separatedBy: .newlines)
             var totalChars = 0
             let totalToType = text.count
             
             for line in lines {
-                // Remove tabs from the line, similar to the Python code
+                // Remove all tabs from the line, exactly like the Python code: line = line.replace('\t', '')
                 let processedLine = line.replacingOccurrences(of: "\t", with: "")
+                
+                // Skip empty lines
+                if processedLine.isEmpty {
+                    // Just press Enter for empty lines
+                    self.pressEnter()
+                    Thread.sleep(forTimeInterval: delay)
+                    continue
+                }
                 
                 // Type each character in the line
                 for char in processedLine {
@@ -173,7 +181,7 @@ class ContentViewController: NSViewController {
                         self.typeCharacter(String(char))
                     }
                     
-                    // Wait between keystrokes
+                    // Wait between keystrokes (very small delay like in Python)
                     Thread.sleep(forTimeInterval: delay)
                     
                     // Update progress
@@ -184,8 +192,7 @@ class ContentViewController: NSViewController {
                     }
                 }
                 
-                // Press Enter after each line, letting the target application handle formatting
-                // This is similar to pyautogui.press("enter") in the Python code
+                // Press Enter after each line, exactly like the Python code: pyautogui.press("enter")
                 self.pressEnter()
                 Thread.sleep(forTimeInterval: delay)
                 totalChars += 1
