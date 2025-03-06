@@ -184,6 +184,9 @@ class ContentViewController: NSViewController {
                     // Type the character
                     if char == "\t" && preserveTabs {
                         self.pressTab()
+                    } else if char == "a" || char == "A" {
+                        // Special handling for 'a' character
+                        self.typeLetterA(isUppercase: char == "A")
                     } else {
                         self.typeCharacter(String(char))
                     }
@@ -214,28 +217,84 @@ class ContentViewController: NSViewController {
         }
     }
     
+    // Special method to handle typing the letter 'a'
+    private func typeLetterA(isUppercase: Bool = false) {
+        guard let source = CGEventSource(stateID: .hidSystemState) else { return }
+        
+        // Key code for 'a' is 0x00
+        let keyCode: CGKeyCode = 0x00
+        let flags: CGEventFlags = isUppercase ? .maskShift : []
+        
+        // Create key down event
+        let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyCode, keyDown: true)
+        keyDown?.flags = flags
+        keyDown?.post(tap: .cghidEventTap)
+        
+        // Ensure enough delay for the key to register
+        usleep(5000) // 5ms delay
+        
+        // Create key up event
+        let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyCode, keyDown: false)
+        keyUp?.post(tap: .cghidEventTap)
+        
+        // Additional delay after key up
+        usleep(1000) // 1ms delay
+    }
+    
     private func typeCharacter(_ character: String) {
         guard let source = CGEventSource(stateID: .hidSystemState) else { return }
         
         // Convert character to keycode and modifiers
         let keyInfo = self.keyCodeForChar(character)
         
+        // Debug output for troubleshooting
+        print("Typing character: \(character), keyCode: \(keyInfo.keyCode), modifiers: \(keyInfo.modifiers)")
+        
         // If we have a valid keycode
         if keyInfo.keyCode != 0 {
             // Create key down event
             let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: true)
             keyDown?.flags = keyInfo.modifiers
+            
+            // For letter 'a' (keyCode 0x00), ensure proper event creation
+            if keyInfo.keyCode == 0x00 {
+                // Special handling for 'a'
+                keyDown?.setIntegerValueField(.keyboardEventKeycode, value: 0)
+            }
+            
+            // Post the key down event
             keyDown?.post(tap: .cghidEventTap)
             
             // Small delay between key down and key up to ensure character is typed
-            usleep(1000) // 1ms delay
+            usleep(5000) // 5ms delay (increased from 1ms)
             
             // Create key up event
             let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: false)
+            
+            // For letter 'a', ensure proper event creation
+            if keyInfo.keyCode == 0x00 {
+                keyUp?.setIntegerValueField(.keyboardEventKeycode, value: 0)
+            }
+            
+            // Post the key up event
             keyUp?.post(tap: .cghidEventTap)
+            
+            // Additional small delay after key up
+            usleep(1000) // 1ms delay
         } else {
             // For unsupported characters, try using a fallback method
             print("Unable to type character: \(character)")
+            
+            // Try an alternative approach for problematic characters
+            if character == "a" {
+                // Hardcoded fallback for 'a'
+                let aKeyCode: CGKeyCode = 0x00
+                let keyDown = CGEvent(keyboardEventSource: source, virtualKey: aKeyCode, keyDown: true)
+                keyDown?.post(tap: .cghidEventTap)
+                usleep(5000)
+                let keyUp = CGEvent(keyboardEventSource: source, virtualKey: aKeyCode, keyDown: false)
+                keyUp?.post(tap: .cghidEventTap)
+            }
         }
     }
     
@@ -301,13 +360,17 @@ class ContentViewController: NSViewController {
     
     // Basic mapping of characters to key codes (limited set for demonstration)
     private let basicKeyCodeMap: [Character: CGKeyCode] = [
+        // Letters - verified key codes for macOS
         "a": 0x00, "b": 0x0B, "c": 0x08, "d": 0x02, "e": 0x0E, "f": 0x03, "g": 0x05, "h": 0x04,
         "i": 0x22, "j": 0x26, "k": 0x28, "l": 0x25, "m": 0x2E, "n": 0x2D, "o": 0x1F, "p": 0x23,
         "q": 0x0C, "r": 0x0F, "s": 0x01, "t": 0x11, "u": 0x20, "v": 0x09, "w": 0x0D, "x": 0x07,
-        "y": 0x10, "z": 0x06, " ": 0x31, "1": 0x12, "2": 0x13, "3": 0x14, "4": 0x15, "5": 0x17,
+        "y": 0x10, "z": 0x06, 
+        
+        // Numbers and common symbols
+        " ": 0x31, "1": 0x12, "2": 0x13, "3": 0x14, "4": 0x15, "5": 0x17,
         "6": 0x16, "7": 0x1A, "8": 0x1C, "9": 0x19, "0": 0x1D, "-": 0x1B, "=": 0x18, ";": 0x29,
         "'": 0x27, ",": 0x2B, ".": 0x2F, "/": 0x2C, "\\": 0x2A, "`": 0x32, "[": 0x21, "]": 0x1E,
-        "\t": 0x30
+        "\t": 0x30, "\n": 0x24, "\r": 0x24
     ]
     
     // Mapping for characters that require shift key
