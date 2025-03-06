@@ -9,11 +9,11 @@
     <key>CFBundleName</key>
     <string>AutoType</string>
     <key>CFBundleIconFile</key>
-    <string>AppIcon</string>
+    <string>icon</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.6</string>
+    <string>1.0.7</string>
     <key>CFBundleVersion</key>
-    <string>7</string>
+    <string>8</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundlePackageType</key>
