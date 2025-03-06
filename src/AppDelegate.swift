@@ -83,9 +83,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let pasteMenuItem = NSMenuItem(title: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
         let selectAllMenuItem = NSMenuItem(title: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
         
-        // Add pause/resume menu item
-        let pauseResumeMenuItem = NSMenuItem(title: "Pause/Resume Typing", action: #selector(pauseResumeTyping), keyEquivalent: "f")
-        
         editMenuItem.submenu?.addItem(undoMenuItem)
         editMenuItem.submenu?.addItem(redoMenuItem)
         editMenuItem.submenu?.addItem(NSMenuItem.separator())
@@ -94,8 +91,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         editMenuItem.submenu?.addItem(pasteMenuItem)
         editMenuItem.submenu?.addItem(NSMenuItem.separator())
         editMenuItem.submenu?.addItem(selectAllMenuItem)
-        editMenuItem.submenu?.addItem(NSMenuItem.separator())
-        editMenuItem.submenu?.addItem(pauseResumeMenuItem)
         
         // Add menus to main menu
         mainMenu.addItem(appMenuItem)
@@ -157,13 +152,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             notification.informativeText = "AutoType needs accessibility permissions to simulate keyboard input. Please grant permissions in System Preferences."
             notification.soundName = NSUserNotificationDefaultSoundName
             NSUserNotificationCenter.default.deliver(notification)
-        }
-    }
-    
-    // Method to handle pause/resume menu item
-    @objc func pauseResumeTyping() {
-        if let contentViewController = popover.contentViewController as? ContentViewController {
-            contentViewController.togglePause()
         }
     }
 }

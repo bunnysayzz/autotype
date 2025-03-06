@@ -9,11 +9,6 @@ class ContentViewController: NSViewController {
     private var statusLabel: NSTextField!
     private var scrollView: NSScrollView!
     
-    // Add property to track pause state
-    private var isPaused = false
-    // Add property to support cancellation
-    private var typingTask: DispatchWorkItem?
-    
     override func loadView() {
         self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 500))
         self.view.wantsLayer = true
@@ -23,35 +18,6 @@ class ContentViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        // Register for keyboard notifications
-        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self = self else { return event }
-            
-            // Check for Cmd+F shortcut
-            if event.modifierFlags.contains(.command) && event.keyCode == 3 { // 'F' key
-                self.togglePause()
-                return nil // Consume the event
-            }
-            
-            return event
-        }
-    }
-    
-    // Add method to toggle pause state
-    @objc public func togglePause() {
-        isPaused = !isPaused
-        
-        if isPaused {
-            statusLabel.stringValue = "Typing paused - Press Cmd+F to resume"
-        } else {
-            statusLabel.stringValue = "Typing resumed"
-            
-            // Signal any waiting threads to continue
-            DispatchQueue.global(qos: .userInitiated).async {
-                // No specific code needed here, just waking up the queue
-            }
-        }
     }
     
     override func viewDidAppear() {
@@ -169,12 +135,6 @@ class ContentViewController: NSViewController {
             return
         }
         
-        // Cancel previous typing task if any
-        if let task = typingTask {
-            task.cancel()
-            typingTask = nil
-        }
-        
         statusLabel.stringValue = "Starting in 5 seconds..."
         typeButton.isEnabled = false
         
@@ -183,8 +143,7 @@ class ContentViewController: NSViewController {
             appDelegate.closePopover(nil)
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
-            guard let self = self else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             self.statusLabel.stringValue = "Typing..."
             self.performTyping(text: text)
         }
@@ -199,15 +158,8 @@ class ContentViewController: NSViewController {
     
     private func performTyping(text: String) {
         let delay = delaySlider.doubleValue
-        isPaused = false
         
-        // Create a work item reference first
-        var workItem: DispatchWorkItem!
-        
-        // Define the typing work closure
-        let typingClosure: () -> Void = { [weak self] in
-            guard let self = self else { return }
-            
+        DispatchQueue.global(qos: .userInitiated).async {
             // Add a small initial delay to ensure we're in the target app
             Thread.sleep(forTimeInterval: 0.5)
             
@@ -222,20 +174,6 @@ class ContentViewController: NSViewController {
                 
                 // Skip empty lines
                 if processedLine.isEmpty {
-                    // Check if we're paused before continuing
-                    while self.isPaused {
-                        Thread.sleep(forTimeInterval: 0.1) // Check every 100ms
-                        
-                        // Check if the task was cancelled
-                        if workItem.isCancelled {
-                            DispatchQueue.main.async {
-                                self.statusLabel.stringValue = "Typing cancelled"
-                                self.typeButton.isEnabled = true
-                            }
-                            return
-                        }
-                    }
-                    
                     // Just press Enter for empty lines
                     self.pressEnter()
                     Thread.sleep(forTimeInterval: delay)
@@ -244,20 +182,6 @@ class ContentViewController: NSViewController {
                 
                 // Type each character in the line
                 for char in processedLine {
-                    // Check if we're paused before typing a character
-                    while self.isPaused {
-                        Thread.sleep(forTimeInterval: 0.1) // Check every 100ms
-                        
-                        // Check if the task was cancelled
-                        if workItem.isCancelled {
-                            DispatchQueue.main.async {
-                                self.statusLabel.stringValue = "Typing cancelled"
-                                self.typeButton.isEnabled = true
-                            }
-                            return
-                        }
-                    }
-                    
                     // Type the character
                     if char == "a" || char == "A" {
                         // Special handling for 'a' character
@@ -273,23 +197,7 @@ class ContentViewController: NSViewController {
                     totalChars += 1
                     let progress = Double(totalChars) / Double(totalToType) * 100
                     DispatchQueue.main.async {
-                        if !self.isPaused {
-                            self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
-                        }
-                    }
-                }
-                
-                // Check if we're paused before pressing Enter
-                while self.isPaused {
-                    Thread.sleep(forTimeInterval: 0.1) // Check every 100ms
-                    
-                    // Check if the task was cancelled
-                    if workItem.isCancelled {
-                        DispatchQueue.main.async {
-                            self.statusLabel.stringValue = "Typing cancelled"
-                            self.typeButton.isEnabled = true
-                        }
-                        return
+                        self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
                     }
                 }
                 
@@ -302,18 +210,8 @@ class ContentViewController: NSViewController {
             DispatchQueue.main.async {
                 self.statusLabel.stringValue = "Typing completed"
                 self.typeButton.isEnabled = true
-                self.typingTask = nil
             }
         }
-        
-        // Create the work item with the typing closure
-        workItem = DispatchWorkItem(block: typingClosure)
-        
-        // Store the work item
-        self.typingTask = workItem
-        
-        // Run the task
-        DispatchQueue.global(qos: .userInitiated).async(execute: workItem)
     }
     
     // Special method to handle typing the letter 'a'

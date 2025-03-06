@@ -9,12 +9,10 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 ## Features
 
 - Paste text and have it automatically typed into any application
-- Adjustable typing delay (0.01 to 0.1 seconds between keystrokes)
-- Ability to pause and resume typing with Cmd+F shortcut
+- Adjustable typing delay (0.01 to 0.2 seconds between keystrokes)
 - 5-second countdown to switch to your target application
 - Status indicator showing typing progress
 - Menu bar application for easy access
-- Standard keyboard shortcuts (Cmd+A, Cmd+C, Cmd+V, etc.) in text field
 
 ## Requirements
 
@@ -56,7 +54,6 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 3. Adjust the typing delay if needed (default is 0.01 seconds)
 4. Click "Start Typing" and quickly switch to your target application
 5. After a 5-second countdown, the text will be typed automatically
-6. Press Cmd+F at any time to pause or resume typing
 
 ## Typing Code
 
@@ -66,19 +63,6 @@ AutoType works great for typing code into editors, terminals, or other applicati
 2. Set a comfortable typing delay (0.01-0.02 seconds works well)
 3. Click "Start Typing" and switch to your code editor
 4. The code will be typed with proper line breaks, and most editors will automatically handle indentation
-5. If you need to check something or make adjustments, press Cmd+F to pause typing, then press it again to resume
-
-## Keyboard Shortcuts
-
-AutoType supports the following keyboard shortcuts:
-
-- **Cmd+A**: Select all text
-- **Cmd+C**: Copy selected text
-- **Cmd+V**: Paste text from clipboard
-- **Cmd+X**: Cut selected text
-- **Cmd+Z**: Undo
-- **Shift+Cmd+Z**: Redo
-- **Cmd+F**: Pause/Resume typing
 
 ## Permissions
 

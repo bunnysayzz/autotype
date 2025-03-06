@@ -42,23 +42,14 @@ If typing is inconsistent or characters are missing:
 
 Some special characters may not be properly mapped. Try using simpler text with standard ASCII characters.
 
-### 6. Using Pause/Resume During Typing
-
-If you need to temporarily pause the typing process:
-
-1. Press **Cmd+F** during typing to pause
-2. The status will show "Typing paused - Press Cmd+F to resume"
-3. Press **Cmd+F** again to resume typing from where it left off
-4. You can also use the "Pause/Resume Typing" option in the Edit menu
-
-### 7. Typing Code
+### 6. Typing Code
 
 When typing code:
 
 1. The app will automatically remove tabs and type the code with proper line breaks
 2. Most code editors will automatically format the code as you type
 
-### 8. Ensure Proper Focus
+### 7. Ensure Proper Focus
 
 Make sure you:
 1. Click "Start Typing"
