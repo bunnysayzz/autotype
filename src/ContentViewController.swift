@@ -55,7 +55,7 @@ class ContentViewController: NSViewController {
         sliderLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(sliderLabel)
         
-        delaySlider = NSSlider(value: 0.01, minValue: 0.001, maxValue: 0.1, target: self, action: #selector(sliderChanged(_:)))
+        delaySlider = NSSlider(value: 0.01, minValue: 0.010, maxValue: 0.1, target: self, action: #selector(sliderChanged(_:)))
         delaySlider.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(delaySlider)
         
