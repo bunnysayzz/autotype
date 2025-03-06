@@ -35,13 +35,23 @@ If you're running from source:
 If typing is inconsistent or characters are missing:
 
 1. Try increasing the typing delay (move the slider to the right)
-2. A delay of 0.08-0.1 seconds often works better on slower systems
+2. A delay of 0.01-0.02 seconds often works well for most systems
+3. For very complex text or slower systems, try 0.05-0.1 seconds
 
 ### 5. Check for Special Characters
 
 Some special characters may not be properly mapped. Try using simpler text with standard ASCII characters.
 
-### 6. Ensure Proper Focus
+### 6. Typing Code
+
+When typing code:
+
+1. Make sure "Preserve Tab Characters" is unchecked (default setting) to avoid extra indentation
+2. The app will automatically remove tabs and type the code with proper line breaks
+3. Most code editors will automatically format the code as you type
+4. If you need to preserve exact formatting including tabs, check the "Preserve Tab Characters" option
+
+### 7. Ensure Proper Focus
 
 Make sure you:
 1. Click "Start Typing"

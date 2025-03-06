@@ -8,7 +8,6 @@ class ContentViewController: NSViewController {
     private var typeButton: NSButton!
     private var statusLabel: NSTextField!
     private var preserveTabsCheckbox: NSButton!
-    private var codeModeCheckbox: NSButton!
     private var scrollView: NSScrollView!
     
     override func loadView() {
@@ -55,25 +54,19 @@ class ContentViewController: NSViewController {
         // Preserve tabs checkbox
         preserveTabsCheckbox = NSButton(checkboxWithTitle: "Preserve Tab Characters", target: nil, action: nil)
         preserveTabsCheckbox.translatesAutoresizingMaskIntoConstraints = false
-        preserveTabsCheckbox.state = .on
+        preserveTabsCheckbox.state = .off // Default to OFF
         view.addSubview(preserveTabsCheckbox)
-        
-        // Code mode checkbox
-        codeModeCheckbox = NSButton(checkboxWithTitle: "Code Mode (Exact Formatting)", target: nil, action: nil)
-        codeModeCheckbox.translatesAutoresizingMaskIntoConstraints = false
-        codeModeCheckbox.state = .on
-        view.addSubview(codeModeCheckbox)
         
         // Delay slider
         let sliderLabel = NSTextField(labelWithString: "Typing Delay:")
         sliderLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(sliderLabel)
         
-        delaySlider = NSSlider(value: 0.05, minValue: 0.01, maxValue: 0.2, target: self, action: #selector(sliderChanged(_:)))
+        delaySlider = NSSlider(value: 0.01, minValue: 0.001, maxValue: 0.1, target: self, action: #selector(sliderChanged(_:)))
         delaySlider.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(delaySlider)
         
-        delayLabel = NSTextField(labelWithString: "0.05 seconds")
+        delayLabel = NSTextField(labelWithString: "0.01 seconds")
         delayLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(delayLabel)
         
@@ -106,10 +99,7 @@ class ContentViewController: NSViewController {
             preserveTabsCheckbox.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 15),
             preserveTabsCheckbox.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
-            codeModeCheckbox.topAnchor.constraint(equalTo: preserveTabsCheckbox.bottomAnchor, constant: 10),
-            codeModeCheckbox.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            
-            sliderLabel.topAnchor.constraint(equalTo: codeModeCheckbox.bottomAnchor, constant: 15),
+            sliderLabel.topAnchor.constraint(equalTo: preserveTabsCheckbox.bottomAnchor, constant: 15),
             sliderLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
             delaySlider.centerYAnchor.constraint(equalTo: sliderLabel.centerYAnchor),
@@ -170,69 +160,42 @@ class ContentViewController: NSViewController {
     private func performTyping(text: String) {
         let delay = delaySlider.doubleValue
         let preserveTabs = preserveTabsCheckbox.state == .on
-        let codeMode = codeModeCheckbox.state == .on
         
         DispatchQueue.global(qos: .userInitiated).async {
             // Add a small initial delay to ensure we're in the target app
             Thread.sleep(forTimeInterval: 0.5)
             
-            // For code, we need to be more precise with indentation and formatting
-            // Process the text line by line to maintain proper structure
+            // Split text into lines
             let lines = text.components(separatedBy: .newlines)
             var totalChars = 0
             let totalToType = text.count
             
             for (index, line) in lines.enumerated() {
-                // Preserve the exact line as is, including all whitespace
-                let processedLine = line
+                // Remove tabs if not preserving them
+                let processedLine = preserveTabs ? line : line.replacingOccurrences(of: "\t", with: "")
                 
-                if codeMode {
-                    // First handle indentation (spaces or tabs at the beginning of the line)
-                    var indentCount = 0
-                    for char in processedLine {
-                        if char == " " {
-                            self.typeCharacter(" ")
-                            indentCount += 1
-                        } else if char == "\t" && preserveTabs {
-                            self.pressTab()
-                            indentCount += 1
-                        } else {
-                            break
-                        }
-                        Thread.sleep(forTimeInterval: delay / 2) // Faster for indentation
+                // Type each character with delay
+                for char in processedLine {
+                    // Skip tab characters if not preserving them
+                    if char == "\t" && !preserveTabs {
+                        continue
                     }
                     
-                    // Then type the rest of the line
-                    if indentCount < processedLine.count {
-                        let remainingLine = String(processedLine.dropFirst(indentCount))
-                        for char in remainingLine {
-                            self.typeCharacter(String(char))
-                            Thread.sleep(forTimeInterval: delay)
-                            
-                            // Update progress
-                            totalChars += 1
-                            let progress = Double(totalChars) / Double(totalToType) * 100
-                            DispatchQueue.main.async {
-                                self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
-                            }
-                        }
+                    // Type the character
+                    if char == "\t" && preserveTabs {
+                        self.pressTab()
+                    } else {
+                        self.typeCharacter(String(char))
                     }
-                } else {
-                    // Standard typing mode
-                    for char in processedLine {
-                        if char == "\t" && preserveTabs {
-                            self.pressTab()
-                        } else {
-                            self.typeCharacter(String(char))
-                        }
-                        Thread.sleep(forTimeInterval: delay)
-                        
-                        // Update progress
-                        totalChars += 1
-                        let progress = Double(totalChars) / Double(totalToType) * 100
-                        DispatchQueue.main.async {
-                            self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
-                        }
+                    
+                    // Wait between keystrokes
+                    Thread.sleep(forTimeInterval: delay)
+                    
+                    // Update progress
+                    totalChars += 1
+                    let progress = Double(totalChars) / Double(totalToType) * 100
+                    DispatchQueue.main.async {
+                        self.statusLabel.stringValue = String(format: "Typing... %.1f%%", progress)
                     }
                 }
                 
@@ -251,34 +214,8 @@ class ContentViewController: NSViewController {
         }
     }
     
-    // Improved typing method for characters
     private func typeCharacter(_ character: String) {
         guard let source = CGEventSource(stateID: .hidSystemState) else { return }
-        
-        // Special handling for common programming characters
-        if character == "{" || character == "}" || character == "(" || character == ")" ||
-           character == "[" || character == "]" || character == "<" || character == ">" ||
-           character == "+" || character == "-" || character == "*" || character == "/" ||
-           character == "=" || character == ";" || character == ":" || character == "," ||
-           character == "." || character == "?" || character == "!" || character == "&" ||
-           character == "|" || character == "^" || character == "~" || character == "`" ||
-           character == "\"" || character == "'" || character == "_" || character == "#" ||
-           character == "@" || character == "$" || character == "%" || character == "\\" {
-            // These are important for code, ensure they're typed correctly
-            let keyInfo = self.keyCodeForChar(character)
-            if keyInfo.keyCode != 0 {
-                let keyDown = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: true)
-                keyDown?.flags = keyInfo.modifiers
-                keyDown?.post(tap: .cghidEventTap)
-                
-                let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: false)
-                keyUp?.flags = keyInfo.modifiers
-                keyUp?.post(tap: .cghidEventTap)
-            } else {
-                print("Unable to type special character: \(character)")
-            }
-            return
-        }
         
         // Convert character to keycode and modifiers
         let keyInfo = self.keyCodeForChar(character)
@@ -290,12 +227,14 @@ class ContentViewController: NSViewController {
             keyDown?.flags = keyInfo.modifiers
             keyDown?.post(tap: .cghidEventTap)
             
+            // Small delay between key down and key up to ensure character is typed
+            usleep(1000) // 1ms delay
+            
             // Create key up event
             let keyUp = CGEvent(keyboardEventSource: source, virtualKey: keyInfo.keyCode, keyDown: false)
-            keyUp?.flags = keyInfo.modifiers
             keyUp?.post(tap: .cghidEventTap)
         } else {
-            // For unsupported characters, try to use a fallback
+            // For unsupported characters, try using a fallback method
             print("Unable to type character: \(character)")
         }
     }
@@ -355,14 +294,12 @@ class ContentViewController: NSViewController {
             return (keyCode, [])
         }
         
-        // For characters not in our map, log the issue
-        print("Character not found in keymap: \(char) (Unicode: \(char.unicodeScalars.first?.value ?? 0))")
-        
-        // Try to use a close approximation if possible
-        return (0, [])
+        // For characters not in our map, try to use Unicode input method
+        print("Character not found in keymap: \(char)")
+        return (0x09, []) // Default to 'v' key (for paste fallback)
     }
     
-    // Enhanced mapping of characters to key codes
+    // Basic mapping of characters to key codes (limited set for demonstration)
     private let basicKeyCodeMap: [Character: CGKeyCode] = [
         "a": 0x00, "b": 0x0B, "c": 0x08, "d": 0x02, "e": 0x0E, "f": 0x03, "g": 0x05, "h": 0x04,
         "i": 0x22, "j": 0x26, "k": 0x28, "l": 0x25, "m": 0x2E, "n": 0x2D, "o": 0x1F, "p": 0x23,
@@ -370,10 +307,10 @@ class ContentViewController: NSViewController {
         "y": 0x10, "z": 0x06, " ": 0x31, "1": 0x12, "2": 0x13, "3": 0x14, "4": 0x15, "5": 0x17,
         "6": 0x16, "7": 0x1A, "8": 0x1C, "9": 0x19, "0": 0x1D, "-": 0x1B, "=": 0x18, ";": 0x29,
         "'": 0x27, ",": 0x2B, ".": 0x2F, "/": 0x2C, "\\": 0x2A, "`": 0x32, "[": 0x21, "]": 0x1E,
-        "\t": 0x30, "\n": 0x24, "\r": 0x24
+        "\t": 0x30
     ]
     
-    // Enhanced mapping for characters that require shift key
+    // Mapping for characters that require shift key
     private let shiftKeyCodeMap: [Character: (CGKeyCode, CGEventFlags)] = [
         "!": (0x12, .maskShift), "@": (0x13, .maskShift), "#": (0x14, .maskShift),
         "$": (0x15, .maskShift), "%": (0x17, .maskShift), "^": (0x16, .maskShift),
@@ -381,15 +318,6 @@ class ContentViewController: NSViewController {
         ")": (0x1D, .maskShift), "_": (0x1B, .maskShift), "+": (0x18, .maskShift),
         "{": (0x21, .maskShift), "}": (0x1E, .maskShift), "|": (0x2A, .maskShift),
         ":": (0x29, .maskShift), "\"": (0x27, .maskShift), "<": (0x2B, .maskShift),
-        ">": (0x2F, .maskShift), "?": (0x2C, .maskShift), "~": (0x32, .maskShift),
-        "A": (0x00, .maskShift), "B": (0x0B, .maskShift), "C": (0x08, .maskShift),
-        "D": (0x02, .maskShift), "E": (0x0E, .maskShift), "F": (0x03, .maskShift),
-        "G": (0x05, .maskShift), "H": (0x04, .maskShift), "I": (0x22, .maskShift),
-        "J": (0x26, .maskShift), "K": (0x28, .maskShift), "L": (0x25, .maskShift),
-        "M": (0x2E, .maskShift), "N": (0x2D, .maskShift), "O": (0x1F, .maskShift),
-        "P": (0x23, .maskShift), "Q": (0x0C, .maskShift), "R": (0x0F, .maskShift),
-        "S": (0x01, .maskShift), "T": (0x11, .maskShift), "U": (0x20, .maskShift),
-        "V": (0x09, .maskShift), "W": (0x0D, .maskShift), "X": (0x07, .maskShift),
-        "Y": (0x10, .maskShift), "Z": (0x06, .maskShift)
+        ">": (0x2F, .maskShift), "?": (0x2C, .maskShift), "~": (0x32, .maskShift)
     ]
 } 

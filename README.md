@@ -11,7 +11,6 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 - Paste text and have it automatically typed into any application
 - Adjustable typing delay (0.01 to 0.2 seconds between keystrokes)
 - Option to preserve tab characters for code indentation
-- Special "Code Mode" for precise formatting of programming code
 - 5-second countdown to switch to your target application
 - Status indicator showing typing progress
 - Menu bar application for easy access
@@ -53,11 +52,22 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 
 1. Click the keyboard icon in the menu bar to open AutoType
 2. Paste your text into the text area
-3. Adjust the typing delay if needed (default is 0.05 seconds)
-4. Choose whether to preserve tab characters (checked by default)
-5. Enable "Code Mode" when typing programming code for precise formatting
-6. Click "Start Typing" and quickly switch to your target application
-7. After a 5-second countdown, the text will be typed automatically
+3. Adjust the typing delay if needed (default is 0.01 seconds)
+4. Choose whether to preserve tab characters (unchecked by default)
+   - For code, keep it unchecked to avoid extra indentation
+   - For text that needs exact formatting, check this option
+5. Click "Start Typing" and quickly switch to your target application
+6. After a 5-second countdown, the text will be typed automatically
+
+## Typing Code
+
+AutoType works great for typing code into editors, terminals, or other applications:
+
+1. Paste your code into the text area
+2. Make sure "Preserve Tab Characters" is unchecked (default)
+3. Set a comfortable typing delay (0.01-0.02 seconds works well)
+4. Click "Start Typing" and switch to your code editor
+5. The code will be typed with proper line breaks, and most editors will automatically handle indentation
 
 ## Permissions
 
@@ -85,12 +95,6 @@ The application consists of three main Swift files:
 - `ContentViewController.swift`: Contains the UI and typing logic
 
 ## Version History
-
-- **1.1.0** (2023-03-06): Code Typing Improvements
-  - Added "Code Mode" for precise code formatting
-  - Enhanced character mapping for programming symbols
-  - Fixed issues with missing characters
-  - Improved whitespace and indentation handling
 
 - **1.0.0** (2023-03-05): Initial release
   - Basic typing functionality
