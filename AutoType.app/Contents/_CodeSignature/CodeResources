@@ -19,10 +19,10 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			grvsjIjNavz4AU77vROc5aU58KE=
+			OqSwAuqR5UiC83oL1ax943IKHw0=
 			</data>
 			<key>requirement</key>
-			<string>cdhash H"5ec7f93de12b702a8dffd49ef1b34ac171deefa9" or cdhash H"82bbec8c88cd6afcf8014efbbd139ce5a539f0a1"</string>
+			<string>cdhash H"933890dd5f726915f72b8e2f88c729b70ec46703" or cdhash H"3aa4b002ea91e54882f37a0bd5ac7de3720a1f0d"</string>
 		</dict>
 		<key>Resources/icon.icns</key>
 		<dict>

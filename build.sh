@@ -29,15 +29,15 @@ echo "APPL????" > AutoType.app/Contents/PkgInfo
 # Copy resources
 cp -r resources/* AutoType.app/Contents/Resources/
 
-# Sign the app if codesign is available
-if command -v codesign &> /dev/null; then
-    echo "Signing the application..."
-    codesign --force --deep --entitlements AutoType.entitlements --sign - AutoType.app
-    
-    # Verify the signing
-    echo "Verifying signature..."
-    codesign --verify --verbose AutoType.app
-fi
+# Sign the app with hardened runtime
+echo "Signing the application..."
+codesign --force --deep --options runtime \
+    --entitlements AutoType.entitlements \
+    --sign - \
+    AutoType.app
 
-echo "Build completed. App bundle is at AutoType.app"
-echo "Note: You may need to grant accessibility permissions in System Preferences > Security & Privacy > Privacy > Accessibility" 
+# Verify the signing
+echo "Verifying signature..."
+codesign --verify --verbose=4 AutoType.app
+
+echo "Build completed. App bundle is at AutoType.app" 
