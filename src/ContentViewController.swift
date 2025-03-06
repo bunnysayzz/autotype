@@ -7,7 +7,6 @@ class ContentViewController: NSViewController {
     private var delayLabel: NSTextField!
     private var typeButton: NSButton!
     private var statusLabel: NSTextField!
-    private var preserveTabsCheckbox: NSButton!
     private var scrollView: NSScrollView!
     
     override func loadView() {
@@ -51,12 +50,6 @@ class ContentViewController: NSViewController {
         scrollView.documentView = textView
         view.addSubview(scrollView)
         
-        // Preserve tabs checkbox
-        preserveTabsCheckbox = NSButton(checkboxWithTitle: "Preserve Tab Characters", target: nil, action: nil)
-        preserveTabsCheckbox.translatesAutoresizingMaskIntoConstraints = false
-        preserveTabsCheckbox.state = .off // Default to OFF
-        view.addSubview(preserveTabsCheckbox)
-        
         // Delay slider
         let sliderLabel = NSTextField(labelWithString: "Typing Delay:")
         sliderLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -96,10 +89,7 @@ class ContentViewController: NSViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             scrollView.heightAnchor.constraint(equalToConstant: 200),
             
-            preserveTabsCheckbox.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 15),
-            preserveTabsCheckbox.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            
-            sliderLabel.topAnchor.constraint(equalTo: preserveTabsCheckbox.bottomAnchor, constant: 15),
+            sliderLabel.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 15),
             sliderLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             
             delaySlider.centerYAnchor.constraint(equalTo: sliderLabel.centerYAnchor),
@@ -159,7 +149,6 @@ class ContentViewController: NSViewController {
     
     private func performTyping(text: String) {
         let delay = delaySlider.doubleValue
-        let preserveTabs = preserveTabsCheckbox.state == .on
         
         DispatchQueue.global(qos: .userInitiated).async {
             // Add a small initial delay to ensure we're in the target app
@@ -171,20 +160,13 @@ class ContentViewController: NSViewController {
             let totalToType = text.count
             
             for (index, line) in lines.enumerated() {
-                // Remove tabs if not preserving them
-                let processedLine = preserveTabs ? line : line.replacingOccurrences(of: "\t", with: "")
+                // Always remove tabs for better compatibility
+                let processedLine = line.replacingOccurrences(of: "\t", with: "")
                 
                 // Type each character with delay
                 for char in processedLine {
-                    // Skip tab characters if not preserving them
-                    if char == "\t" && !preserveTabs {
-                        continue
-                    }
-                    
                     // Type the character
-                    if char == "\t" && preserveTabs {
-                        self.pressTab()
-                    } else if char == "a" || char == "A" {
+                    if char == "a" || char == "A" {
                         // Special handling for 'a' character
                         self.typeLetterA(isUppercase: char == "A")
                     } else {

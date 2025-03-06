@@ -53,21 +53,17 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 1. Click the keyboard icon in the menu bar to open AutoType
 2. Paste your text into the text area
 3. Adjust the typing delay if needed (default is 0.01 seconds)
-4. Choose whether to preserve tab characters (unchecked by default)
-   - For code, keep it unchecked to avoid extra indentation
-   - For text that needs exact formatting, check this option
-5. Click "Start Typing" and quickly switch to your target application
-6. After a 5-second countdown, the text will be typed automatically
+4. Click "Start Typing" and quickly switch to your target application
+5. After a 5-second countdown, the text will be typed automatically
 
 ## Typing Code
 
 AutoType works great for typing code into editors, terminals, or other applications:
 
 1. Paste your code into the text area
-2. Make sure "Preserve Tab Characters" is unchecked (default)
-3. Set a comfortable typing delay (0.01-0.02 seconds works well)
-4. Click "Start Typing" and switch to your code editor
-5. The code will be typed with proper line breaks, and most editors will automatically handle indentation
+2. Set a comfortable typing delay (0.01-0.02 seconds works well)
+3. Click "Start Typing" and switch to your code editor
+4. The code will be typed with proper line breaks, and most editors will automatically handle indentation
 
 ## Permissions
 

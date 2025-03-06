@@ -46,10 +46,8 @@ Some special characters may not be properly mapped. Try using simpler text with 
 
 When typing code:
 
-1. Make sure "Preserve Tab Characters" is unchecked (default setting) to avoid extra indentation
-2. The app will automatically remove tabs and type the code with proper line breaks
-3. Most code editors will automatically format the code as you type
-4. If you need to preserve exact formatting including tabs, check the "Preserve Tab Characters" option
+1. The app will automatically remove tabs and type the code with proper line breaks
+2. Most code editors will automatically format the code as you type
 
 ### 7. Ensure Proper Focus
 
