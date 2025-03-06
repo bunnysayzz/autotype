@@ -20,6 +20,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
         
+        // Set up the main menu for keyboard shortcuts
+        setupMainMenu()
+        
         // Check for accessibility permissions
         checkAccessibilityPermissions()
         
@@ -51,6 +54,50 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.closePopover(event)
         }
         eventMonitor?.start()
+    }
+    
+    // Set up the main menu for keyboard shortcuts
+    private func setupMainMenu() {
+        let mainMenu = NSMenu(title: "MainMenu")
+        
+        // Application menu
+        let appMenuItem = NSMenuItem()
+        appMenuItem.submenu = NSMenu(title: "AutoType")
+        
+        let aboutMenuItem = NSMenuItem(title: "About AutoType", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: "")
+        appMenuItem.submenu?.addItem(aboutMenuItem)
+        appMenuItem.submenu?.addItem(NSMenuItem.separator())
+        
+        let quitMenuItem = NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        appMenuItem.submenu?.addItem(quitMenuItem)
+        
+        // Edit menu (for keyboard shortcuts)
+        let editMenuItem = NSMenuItem()
+        editMenuItem.submenu = NSMenu(title: "Edit")
+        
+        // Add standard edit menu items
+        let undoMenuItem = NSMenuItem(title: "Undo", action: Selector(("undo:")), keyEquivalent: "z")
+        let redoMenuItem = NSMenuItem(title: "Redo", action: Selector(("redo:")), keyEquivalent: "Z") // Shift+Cmd+Z
+        let cutMenuItem = NSMenuItem(title: "Cut", action: #selector(NSText.cut(_:)), keyEquivalent: "x")
+        let copyMenuItem = NSMenuItem(title: "Copy", action: #selector(NSText.copy(_:)), keyEquivalent: "c")
+        let pasteMenuItem = NSMenuItem(title: "Paste", action: #selector(NSText.paste(_:)), keyEquivalent: "v")
+        let selectAllMenuItem = NSMenuItem(title: "Select All", action: #selector(NSText.selectAll(_:)), keyEquivalent: "a")
+        
+        editMenuItem.submenu?.addItem(undoMenuItem)
+        editMenuItem.submenu?.addItem(redoMenuItem)
+        editMenuItem.submenu?.addItem(NSMenuItem.separator())
+        editMenuItem.submenu?.addItem(cutMenuItem)
+        editMenuItem.submenu?.addItem(copyMenuItem)
+        editMenuItem.submenu?.addItem(pasteMenuItem)
+        editMenuItem.submenu?.addItem(NSMenuItem.separator())
+        editMenuItem.submenu?.addItem(selectAllMenuItem)
+        
+        // Add menus to main menu
+        mainMenu.addItem(appMenuItem)
+        mainMenu.addItem(editMenuItem)
+        
+        // Set as the application menu
+        NSApplication.shared.mainMenu = mainMenu
     }
     
     @objc func handleStatusItemClick(_ sender: NSStatusBarButton) {

@@ -20,6 +20,12 @@ class ContentViewController: NSViewController {
         setupUI()
     }
     
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        // Make the text view the first responder to properly handle keyboard shortcuts
+        self.view.window?.makeFirstResponder(textView)
+    }
+    
     private func setupUI() {
         // Title
         let titleLabel = NSTextField(labelWithString: "AutoType")
@@ -43,6 +49,9 @@ class ContentViewController: NSViewController {
         textView = NSTextView(frame: .zero)
         textView.isEditable = true
         textView.isSelectable = true
+        textView.isRichText = false
+        textView.allowsUndo = true
+        textView.enabledTextCheckingTypes = 0 // Disable text checking
         textView.font = NSFont.systemFont(ofSize: 12)
         textView.textContainerInset = NSSize(width: 5, height: 5)
         textView.autoresizingMask = [.width, .height]

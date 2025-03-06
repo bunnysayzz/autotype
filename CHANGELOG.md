@@ -5,6 +5,13 @@ All notable changes to AutoType will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.8] - 2023-03-12
+
+### Fixed
+- Added support for standard keyboard shortcuts (Cmd+A, Cmd+C, Cmd+V, etc.)
+- Fixed issue where keyboard shortcuts weren't working in the text input field
+- Improved text handling with proper responder chain implementation
+
 ## [1.0.7] - 2023-03-11
 
 ### Fixed
