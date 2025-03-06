@@ -2,49 +2,30 @@
 
 # Script to create DMG for AutoType
 
-# Configuration
-APP_NAME="AutoType"
-DMG_NAME="$APP_NAME-1.0.0"
-DMG_VOLUME_NAME="$APP_NAME Installer"
-DMG_SIZE="50m"
-DMG_TEMP="temp.dmg"
-DMG_FINAL="$DMG_NAME.dmg"
+VERSION=$(grep -A1 "CFBundleShortVersionString" Info.plist | grep string | sed -E 's/.*<string>(.*)<\/string>.*/\1/')
+DMG_NAME="AutoType-$VERSION.dmg"
+VOLUME_NAME="AutoType $VERSION"
+APP_NAME="AutoType.app"
+RELEASE_DIR="releases"
 
-# Clean up any previous builds
-rm -rf "$DMG_TEMP" "$DMG_FINAL"
+# Ensure the app is built
+if [ ! -d "$APP_NAME" ]; then
+    echo "Building AutoType..."
+    ./build.sh
+fi
 
-# Build the app
-echo "Building $APP_NAME..."
-./build.sh
+# Create releases directory if it doesn't exist
+mkdir -p "$RELEASE_DIR"
 
-# Create a temporary DMG
-echo "Creating temporary DMG..."
-hdiutil create -srcfolder "$APP_NAME.app" -volname "$DMG_VOLUME_NAME" -fs HFS+ \
-      -fsargs "-c c=64,a=16,e=16" -format UDRW -size "$DMG_SIZE" "$DMG_TEMP"
+# Create a temporary directory for DMG contents
+TMP_DIR=$(mktemp -d)
+cp -r "$APP_NAME" "$TMP_DIR/"
 
-# Mount the temporary DMG
-echo "Mounting temporary DMG..."
-MOUNT_DIR="/Volumes/$DMG_VOLUME_NAME"
-DEV_NAME=$(hdiutil attach -readwrite -noverify -noautoopen "$DMG_TEMP" | egrep '^/dev/' | sed 1q | awk '{print $1}')
-
-# Wait for the mount
-sleep 2
-
-# Create Applications symlink
-echo "Creating Applications symlink..."
-pushd "$MOUNT_DIR" > /dev/null
-ln -s /Applications
-popd > /dev/null
-
-# Unmount the temporary DMG
-echo "Unmounting temporary DMG..."
-hdiutil detach "$DEV_NAME"
-
-# Convert the temporary DMG to the final compressed DMG
-echo "Creating final DMG..."
-hdiutil convert "$DMG_TEMP" -format UDZO -o "$DMG_FINAL"
+# Create DMG
+echo "Creating DMG..."
+hdiutil create -volname "$VOLUME_NAME" -srcfolder "$TMP_DIR" -ov -format UDZO "$RELEASE_DIR/$DMG_NAME"
 
 # Clean up
-rm -f "$DMG_TEMP"
+rm -rf "$TMP_DIR"
 
-echo "DMG created successfully at $DMG_FINAL" 
+echo "DMG created at $RELEASE_DIR/$DMG_NAME" 

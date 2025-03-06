@@ -9,17 +9,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Menu bar application with popover interface
-- Text input area with scrolling support
+- Text input area with scrolling support and keyboard shortcuts (Cmd+A, Cmd+C, Cmd+V)
 - Adjustable typing delay (0.01 to 0.1 seconds)
+- Smart line handling for better code formatting
 - 5-second countdown before typing begins
 - Progress indicator showing typing status
-- Automatic line handling for code formatting
-- Support for all standard keyboard shortcuts (Cmd+A, Cmd+C, Cmd+V, etc.)
 - Accessibility permissions checking and prompting
 - Comprehensive key mapping for standard characters
 - Support for special characters and modifiers
-- Reliable typing with proper delays
-- Special handling for problematic characters
-- Enhanced text input field with undo/redo support
-- Custom app icon
-- Detailed documentation and troubleshooting guide 
+- Reliable typing with proper delays between keystrokes
+- Automatic handling of tabs and indentation
+- Beautiful app icon and modern UI
+
+### Features
+- Simple and intuitive interface
+- Automatic indentation handling for code
+- Support for all standard keyboard shortcuts
+- Fast and reliable typing simulation
+- Status indicator showing typing progress
+- System menu bar integration
+- Accessibility permissions handling 
