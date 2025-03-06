@@ -159,11 +159,11 @@ class ContentViewController: NSViewController {
             var totalChars = 0
             let totalToType = text.count
             
-            for (index, line) in lines.enumerated() {
-                // Always remove tabs for better compatibility
+            for line in lines {
+                // Remove tabs from the line, similar to the Python code
                 let processedLine = line.replacingOccurrences(of: "\t", with: "")
                 
-                // Type each character with delay
+                // Type each character in the line
                 for char in processedLine {
                     // Type the character
                     if char == "a" || char == "A" {
@@ -184,12 +184,11 @@ class ContentViewController: NSViewController {
                     }
                 }
                 
-                // Press Enter after each line except the last one if it's empty
-                if index < lines.count - 1 || !lines.last!.isEmpty {
-                    self.pressEnter()
-                    Thread.sleep(forTimeInterval: delay)
-                    totalChars += 1
-                }
+                // Press Enter after each line, letting the target application handle formatting
+                // This is similar to pyautogui.press("enter") in the Python code
+                self.pressEnter()
+                Thread.sleep(forTimeInterval: delay)
+                totalChars += 1
             }
             
             DispatchQueue.main.async {

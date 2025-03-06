@@ -5,6 +5,13 @@ All notable changes to AutoType will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2023-03-08
+
+### Changed
+- Improved line handling to press Enter after each line, similar to Python's pyautogui approach
+- Enhanced typing behavior to let the target application handle formatting automatically
+- Simplified typing logic for better compatibility with code editors and IDEs
+
 ## [1.0.3] - 2023-03-07
 
 ### Changed
