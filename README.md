@@ -24,7 +24,7 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 
 ### Option 1: Download the pre-built app
 
-1. Download the latest release from the [Releases](https://github.com/mdazharuddin/autotype/releases) page
+1. Download the latest release from the [Releases](https://github.com/bunnysayzz/autotype/releases) page
 2. Move AutoType.app to your Applications folder
 3. Grant accessibility permissions when prompted
 
@@ -32,7 +32,7 @@ AutoType is a simple macOS utility that allows you to automatically type text in
 
 1. Clone this repository:
    ```
-   git clone https://github.com/mdazharuddin/autotype.git
+   git clone https://github.com/bunnysayzz/autotype.git
    cd autotype
    ```
 

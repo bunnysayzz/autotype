@@ -41,7 +41,7 @@ If you have ideas for new features or improvements, please create an issue with:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/mdazharuddin/autotype.git
+   git clone https://github.com/bunnysayzz/autotype.git
    cd autotype
    ```
 

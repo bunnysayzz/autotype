@@ -29,7 +29,7 @@ cd ..
 echo "Release archive created at $RELEASE_DIR/$RELEASE_ZIP"
 echo ""
 echo "To create a GitHub release:"
-echo "1. Go to https://github.com/mdazharuddin/autotype/releases/new"
+echo "1. Go to https://github.com/bunnysayzz/autotype/releases/new"
 echo "2. Set the tag to v$VERSION"
 echo "3. Set the title to 'AutoType $VERSION'"
 echo "4. Add release notes from CHANGELOG.md"
