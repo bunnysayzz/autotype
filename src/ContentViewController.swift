@@ -8,6 +8,8 @@ class ContentViewController: NSViewController {
     private var typeButton: NSButton!
     private var statusLabel: NSTextField!
     private var scrollView: NSScrollView!
+    private var footerView: NSView!
+    private var githubButton: NSButton!
     
     override func loadView() {
         self.view = NSView(frame: NSRect(x: 0, y: 0, width: 400, height: 500))
@@ -18,6 +20,7 @@ class ContentViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupFooter()
     }
     
     override func viewDidAppear() {
@@ -115,6 +118,128 @@ class ContentViewController: NSViewController {
             statusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             statusLabel.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         ])
+    }
+    
+    private func setupFooter() {
+        // Create footer view
+        footerView = NSView(frame: .zero)
+        footerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(footerView)
+        
+        // Create "Created by" label
+        let createdByLabel = NSTextField(labelWithString: "Created by Azhar")
+        createdByLabel.translatesAutoresizingMaskIntoConstraints = false
+        createdByLabel.textColor = NSColor.secondaryLabelColor
+        createdByLabel.font = NSFont.systemFont(ofSize: 11)
+        footerView.addSubview(createdByLabel)
+        
+        // Create GitHub button with logo
+        githubButton = NSButton(frame: .zero)
+        githubButton.translatesAutoresizingMaskIntoConstraints = false
+        githubButton.bezelStyle = .inline
+        githubButton.isBordered = false
+        githubButton.title = ""
+        githubButton.target = self
+        githubButton.action = #selector(openGitHub)
+        githubButton.toolTip = "Visit GitHub Profile"
+        
+        // Set GitHub logo image
+        githubButton.image = createGitHubLogoImage()
+        
+        footerView.addSubview(githubButton)
+        
+        // Add constraints
+        NSLayoutConstraint.activate([
+            footerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            footerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            footerView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            footerView.heightAnchor.constraint(equalToConstant: 30),
+            
+            createdByLabel.centerXAnchor.constraint(equalTo: footerView.centerXAnchor, constant: -15),
+            createdByLabel.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
+            
+            githubButton.leadingAnchor.constraint(equalTo: createdByLabel.trailingAnchor, constant: 5),
+            githubButton.centerYAnchor.constraint(equalTo: footerView.centerYAnchor),
+            githubButton.widthAnchor.constraint(equalToConstant: 20),
+            githubButton.heightAnchor.constraint(equalToConstant: 20)
+        ])
+        
+        // Update status label constraints to be above footer
+        if let statusLabelBottomConstraint = statusLabel.constraints.first(where: { $0.firstAttribute == .bottom }) {
+            statusLabelBottomConstraint.isActive = false
+        }
+        
+        statusLabel.bottomAnchor.constraint(equalTo: footerView.topAnchor, constant: -10).isActive = true
+    }
+    
+    private func createGitHubLogoImage() -> NSImage {
+        let size = NSSize(width: 16, height: 16)
+        let image = NSImage(size: size)
+        
+        image.lockFocus()
+        
+        // Set up the drawing context
+        NSGraphicsContext.current?.imageInterpolation = .high
+        
+        // GitHub logo path
+        let path = NSBezierPath()
+        
+        // Scale to fit in 16x16
+        let transform = NSAffineTransform()
+        transform.scale(by: 0.015625) // Scale from 1024 to 16
+        
+        // Main octopus head (circle)
+        path.move(to: NSPoint(x: 512, y: 0))
+        path.curve(to: NSPoint(x: 0, y: 512), controlPoint1: NSPoint(x: 229.12, y: 0), controlPoint2: NSPoint(x: 0, y: 229.12))
+        path.curve(to: NSPoint(x: 512, y: 1024), controlPoint1: NSPoint(x: 0, y: 794.88), controlPoint2: NSPoint(x: 229.12, y: 1024))
+        path.curve(to: NSPoint(x: 1024, y: 512), controlPoint1: NSPoint(x: 794.88, y: 1024), controlPoint2: NSPoint(x: 1024, y: 794.88))
+        path.curve(to: NSPoint(x: 512, y: 0), controlPoint1: NSPoint(x: 1024, y: 229.12), controlPoint2: NSPoint(x: 794.88, y: 0))
+        path.close()
+        
+        // Octopus face details
+        let facePath = NSBezierPath()
+        
+        // Right eye
+        facePath.move(to: NSPoint(x: 650, y: 650))
+        facePath.appendOval(in: NSRect(x: 650, y: 650, width: 80, height: 80))
+        
+        // Left eye
+        facePath.move(to: NSPoint(x: 300, y: 650))
+        facePath.appendOval(in: NSRect(x: 300, y: 650, width: 80, height: 80))
+        
+        // Tentacles
+        facePath.move(to: NSPoint(x: 512, y: 300))
+        facePath.curve(to: NSPoint(x: 380, y: 400), controlPoint1: NSPoint(x: 450, y: 320), controlPoint2: NSPoint(x: 400, y: 350))
+        facePath.curve(to: NSPoint(x: 300, y: 500), controlPoint1: NSPoint(x: 360, y: 450), controlPoint2: NSPoint(x: 320, y: 480))
+        
+        facePath.move(to: NSPoint(x: 512, y: 300))
+        facePath.curve(to: NSPoint(x: 644, y: 400), controlPoint1: NSPoint(x: 574, y: 320), controlPoint2: NSPoint(x: 624, y: 350))
+        facePath.curve(to: NSPoint(x: 724, y: 500), controlPoint1: NSPoint(x: 664, y: 450), controlPoint2: NSPoint(x: 704, y: 480))
+        
+        // Bottom tentacles
+        facePath.move(to: NSPoint(x: 512, y: 750))
+        facePath.curve(to: NSPoint(x: 450, y: 850), controlPoint1: NSPoint(x: 500, y: 800), controlPoint2: NSPoint(x: 480, y: 830))
+        facePath.curve(to: NSPoint(x: 400, y: 900), controlPoint1: NSPoint(x: 420, y: 870), controlPoint2: NSPoint(x: 410, y: 890))
+        
+        facePath.move(to: NSPoint(x: 512, y: 750))
+        facePath.curve(to: NSPoint(x: 574, y: 850), controlPoint1: NSPoint(x: 524, y: 800), controlPoint2: NSPoint(x: 544, y: 830))
+        facePath.curve(to: NSPoint(x: 624, y: 900), controlPoint1: NSPoint(x: 604, y: 870), controlPoint2: NSPoint(x: 614, y: 890))
+        
+        path.transform(using: transform as AffineTransform)
+        facePath.transform(using: transform as AffineTransform)
+        
+        // Draw the main shape
+        NSColor.secondaryLabelColor.setFill()
+        path.fill()
+        
+        // Draw the face details
+        NSColor.windowBackgroundColor.setFill()
+        facePath.fill()
+        
+        image.unlockFocus()
+        
+        image.isTemplate = true // This allows the image to adapt to the system's appearance
+        return image
     }
     
     @objc private func sliderChanged(_ sender: NSSlider) {
@@ -380,4 +505,10 @@ class ContentViewController: NSViewController {
         ":": (0x29, .maskShift), "\"": (0x27, .maskShift), "<": (0x2B, .maskShift),
         ">": (0x2F, .maskShift), "?": (0x2C, .maskShift), "~": (0x32, .maskShift)
     ]
+    
+    @objc private func openGitHub() {
+        if let url = URL(string: "https://github.com/bunnysayzz") {
+            NSWorkspace.shared.open(url)
+        }
+    }
 } 
